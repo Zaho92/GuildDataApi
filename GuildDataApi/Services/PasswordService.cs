@@ -23,8 +23,8 @@ namespace GuildDataApi.Services
         private static byte[] GenerateSaltedPasswordHash(byte[] salt, byte[] password)
         {
             byte[] combined = salt.Concat(password).ToArray();
-            using var s = SHA256.Create();
-            return s.ComputeHash(combined);
+            using SHA256 cryptSha256 = SHA256.Create();
+            return cryptSha256.ComputeHash(combined);
         }
 
         public static string GenerateRandomSalt(byte maximumSaltLength = 32)
