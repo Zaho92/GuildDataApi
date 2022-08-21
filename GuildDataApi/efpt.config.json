@@ -1,0 +1,43 @@
+﻿{
+   "CodeGenerationMode": 2,
+   "ContextClassName": "GuildDataBaseContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": true,
+   "ModelNamespace": null,
+   "OutputContextPath": "Data",
+   "OutputPath": "Models",
+   "ProjectRootNamespace": "GuildDataApi",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "[dbo].[rights_template]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[user]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "WIN-62PHH76S4QQ\\SQLEXPRESS.GuildDataBase",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false
+}
