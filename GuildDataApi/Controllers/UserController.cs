@@ -21,7 +21,7 @@ namespace GuildDataApi.Controllers
         [Route("GetUsers")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<User>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ObjectResult Get()
+        public ObjectResult GetUsers()
         {
             GuildDataBaseContext guildDataBaseContext = new GuildDataBaseContext();
             if (!guildDataBaseContext.User.Any()) return NotFound("Keine Benutzer vorhanden.");
@@ -33,7 +33,7 @@ namespace GuildDataApi.Controllers
         [Route("GetUser")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ObjectResult Get(int idUser)
+        public ObjectResult GetUser(int idUser)
         {
             GuildDataBaseContext guildDataBaseContext = new GuildDataBaseContext();
             User? userEntity = guildDataBaseContext.User
@@ -48,7 +48,7 @@ namespace GuildDataApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ObjectResult Login(string username, string password)
+        public ObjectResult LoginUser(string username, string password)
         {
             GuildDataBaseContext guildDataBaseContext = new GuildDataBaseContext();
             User? userEntity = guildDataBaseContext.User
@@ -59,28 +59,28 @@ namespace GuildDataApi.Controllers
             return Ok(userEntity);
         }
 
-        [HttpPut]
+        [HttpPost]
         [Route("AddUser")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ObjectResult Add(string username, string password, string firstname, string lastname, string? phonenumber = null)
+        public ObjectResult AddUser(User user)
         {
-            if (String.IsNullOrWhiteSpace(username)) return BadRequest("Der Benutzername darf nicht leer sein.");
-            if (String.IsNullOrWhiteSpace(password)) return BadRequest("Das Passwort darf nicht leer sein.");
-            if (String.IsNullOrWhiteSpace(firstname)) return BadRequest("Der Vorname darf nicht leer sein.");
-            if (String.IsNullOrWhiteSpace(lastname)) return BadRequest("Der Nachname darf nicht leer sein.");
+            if (String.IsNullOrWhiteSpace(user.Username)) return BadRequest("Der Benutzername darf nicht leer sein.");
+            if (String.IsNullOrWhiteSpace(user.Password)) return BadRequest("Das Passwort darf nicht leer sein.");
+            if (String.IsNullOrWhiteSpace(user.Firstname)) return BadRequest("Der Vorname darf nicht leer sein.");
+            if (String.IsNullOrWhiteSpace(user.Lastname)) return BadRequest("Der Nachname darf nicht leer sein.");
             GuildDataBaseContext guildDataBaseContext = new GuildDataBaseContext();
-            User? userEntity = guildDataBaseContext.User.FirstOrDefault(user => user.Username == username);
+            User? userEntity = guildDataBaseContext.User.FirstOrDefault(user => user.Username == user.Username);
             if (userEntity != null) return BadRequest("Dieser Benutzername exisitiert bereits.");
             string salt = PasswordService.GenerateRandomSalt();
             User newUser = new User()
             {
-                Username = username,
-                Password = PasswordService.GetHashedPassword(salt,password),
+                Username = user.Username,
+                Password = PasswordService.GetHashedPassword(salt, user.Password),
                 Salt = salt,
-                Firstname = firstname,
-                Lastname = lastname,
-                Phonenumber = phonenumber ?? "",
+                Firstname = user.Firstname,
+                Lastname = user.Lastname,
+                Phonenumber = user.Phonenumber,
                 FkRightsTemplates = RightsService.GetStandardUserTemplate()
             };
             guildDataBaseContext.User.Add(newUser);
@@ -88,21 +88,34 @@ namespace GuildDataApi.Controllers
             return Ok(newUser);
         }
 
-        [HttpPost]
-        [Route("ChangeRightsTemplate")]
+        [HttpPut]
+        [Route("EditUser")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ObjectResult Add(int idUser, int idRightsTemplate)
+        public ObjectResult EditUser(User user)
+        {
+            GuildDataBaseContext guildDataBaseContext = new GuildDataBaseContext();
+            User? userEntity = guildDataBaseContext.User.Find(user.IdUser);
+            if (userEntity == null) return BadRequest("Der Benutzer exisitiert nicht.");
+            RightsTemplate? templateEntity = guildDataBaseContext.RightsTemplate.Find(user.FkRightsTemplates);
+            if (templateEntity == null) return BadRequest("Das Template exisitiert nicht.");
+            userEntity = user;
+            guildDataBaseContext.SaveChanges();
+            return Ok(userEntity);
+        }
+
+        [HttpDelete]
+        [Route("DeleteUser")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ObjectResult DeleteUser(int idUser)
         {
             GuildDataBaseContext guildDataBaseContext = new GuildDataBaseContext();
             User? userEntity = guildDataBaseContext.User.Find(idUser);
             if (userEntity == null) return BadRequest("Der Benutzer exisitiert nicht.");
-            RightsTemplate? templateEntity = guildDataBaseContext.RightsTemplate.Find(idRightsTemplate);
-            if (templateEntity == null) return BadRequest("Das Template exisitiert nicht.");
-
-            userEntity.FkRightsTemplates = idRightsTemplate;
+            guildDataBaseContext.User.Remove(userEntity);
             guildDataBaseContext.SaveChanges();
-            return Ok(userEntity);
+            return Ok(true);
         }
     }
 }
