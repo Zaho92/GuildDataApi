@@ -96,7 +96,7 @@ namespace GuildDataApi.Controllers
             GuildDataBaseContext guildDataBaseContext = new GuildDataBaseContext();
             User? userEntity = guildDataBaseContext.User.Find(user.IdUser);
             if (userEntity == null) return BadRequest("Der Benutzer exisitiert nicht.");
-            RightsTemplate? templateEntity = guildDataBaseContext.RightsTemplate.Find(user.FkRightsTemplates);
+            RightsTemplate? templateEntity = guildDataBaseContext.RightsTemplate.Find(user.FkRightsTemplatesNavigation.IdRightsTemplate);
             if (templateEntity == null) return BadRequest("Das Template exisitiert nicht.");
             userEntity = user;
             guildDataBaseContext.SaveChanges();
