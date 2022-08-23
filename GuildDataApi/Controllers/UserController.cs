@@ -69,7 +69,7 @@ namespace GuildDataApi.Controllers
             if (String.IsNullOrWhiteSpace(user.Firstname)) return BadRequest("Der Vorname darf nicht leer sein.");
             if (String.IsNullOrWhiteSpace(user.Lastname)) return BadRequest("Der Nachname darf nicht leer sein.");
             GuildDataBaseContext guildDataBaseContext = new GuildDataBaseContext();
-            User? userEntity = guildDataBaseContext.User.FirstOrDefault(user => user.Username == user.Username);
+            User? userEntity = guildDataBaseContext.User.FirstOrDefault(u => u.Username == user.Username);
             if (userEntity != null) return BadRequest("Dieser Benutzername exisitiert bereits.");
             string salt = PasswordService.GenerateRandomSalt();
             User newUser = new User()
