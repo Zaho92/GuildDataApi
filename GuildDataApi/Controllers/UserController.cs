@@ -75,7 +75,7 @@ namespace GuildDataApi.Controllers
             User newUser = new User()
             {
                 Username = user.Username,
-                Password = PasswordService.GetHashedPassword(salt, user.Password),
+                Password = PasswordService.GetHashedPassword(salt, password),
                 Salt = salt,
                 Firstname = user.Firstname,
                 Lastname = user.Lastname,
