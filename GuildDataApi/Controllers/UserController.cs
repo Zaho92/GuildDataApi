@@ -98,7 +98,29 @@ namespace GuildDataApi.Controllers
             if (userEntity == null) return BadRequest("Der Benutzer exisitiert nicht.");
             RightsTemplate? templateEntity = guildDataBaseContext.RightsTemplate.Find(user.FkRightsTemplatesNavigation.IdRightsTemplate);
             if (templateEntity == null) return BadRequest("Das Template exisitiert nicht.");
-            userEntity = user;
+            userEntity.Username = user.Username;
+            userEntity.Firstname = user.Firstname;
+            userEntity.Lastname = user.Lastname;
+            userEntity.Phonenumber = user.Phonenumber;
+            userEntity.FkRightsTemplates = user.FkRightsTemplatesNavigation.IdRightsTemplate;
+            guildDataBaseContext.SaveChanges();
+            return Ok(userEntity);
+        }
+
+
+        [HttpPut]
+        [Route("ChangePassword")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ObjectResult ChangePassword(int idUser, string oldPassword, string newPassword)
+        {
+            GuildDataBaseContext guildDataBaseContext = new GuildDataBaseContext();
+            User? userEntity = guildDataBaseContext.User.Find(idUser);
+            if (userEntity == null) return BadRequest("Der Benutzer exisitiert nicht.");
+            if (!PasswordService.ValidatePasswordForUser(userEntity, oldPassword)) return BadRequest("Das Passwort ist falsch.");
+            string salt = PasswordService.GenerateRandomSalt();
+            userEntity.Password = PasswordService.GetHashedPassword(salt, newPassword);
+            userEntity.Salt = salt;
             guildDataBaseContext.SaveChanges();
             return Ok(userEntity);
         }
