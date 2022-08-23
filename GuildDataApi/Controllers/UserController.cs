@@ -62,10 +62,10 @@ namespace GuildDataApi.Controllers
         [Route("AddUser")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ObjectResult AddUser(User user)
+        public ObjectResult AddUser(User user, string password)
         {
             if (String.IsNullOrWhiteSpace(user.Username)) return BadRequest("Der Benutzername darf nicht leer sein.");
-            if (String.IsNullOrWhiteSpace(user.Password)) return BadRequest("Das Passwort darf nicht leer sein.");
+            if (String.IsNullOrWhiteSpace(password)) return BadRequest("Das Passwort darf nicht leer sein.");
             if (String.IsNullOrWhiteSpace(user.Firstname)) return BadRequest("Der Vorname darf nicht leer sein.");
             if (String.IsNullOrWhiteSpace(user.Lastname)) return BadRequest("Der Nachname darf nicht leer sein.");
             GuildDataBaseContext guildDataBaseContext = new GuildDataBaseContext();
