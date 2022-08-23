@@ -25,7 +25,6 @@ namespace GuildDataApi.Controllers
         {
             GuildDataBaseContext guildDataBaseContext = new GuildDataBaseContext();
             if (!guildDataBaseContext.User.Any()) return NotFound("Keine Benutzer vorhanden.");
-            Console.WriteLine($"UserController Method 'Get()' was called");
             return Ok(guildDataBaseContext.User.Include(user => user.FkRightsTemplatesNavigation).ToList());
         }
 
