@@ -1,6 +1,7 @@
 ﻿using GuildDataApi.Data;
 using GuildDataApi.Models;
 using GuildDataApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,21 +12,19 @@ namespace GuildDataApi.Controllers
     public class RightsTemplatesController : ControllerBase
     {
         private readonly ILogger<UserController> _logger;
+        private readonly IRightsService _rightsService;
 
-        public RightsTemplatesController(ILogger<UserController> logger)
+        public RightsTemplatesController(ILogger<UserController> logger, IRightsService rightsService)
         {
             _logger = logger;
+            _rightsService = rightsService;
         }
 
-        [HttpGet]
-        [Route("GetRightsTemplates")]
+        [Authorize, HttpGet, Route("GetRightsTemplates")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<RightsTemplate>))]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ObjectResult GetRightsTemplates()
         {
-            GuildDataBaseContext guildDataBaseContext = new GuildDataBaseContext();
-            if (!guildDataBaseContext.RightsTemplate.Any()) return NotFound("Keine Templates vorhanden.");
-            return Ok(guildDataBaseContext.RightsTemplate.ToList());
+            return Ok(_rightsService.GetRightsTemplates());
         }
     }
 }
