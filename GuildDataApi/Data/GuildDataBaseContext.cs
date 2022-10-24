@@ -26,7 +26,7 @@ namespace GuildDataApi.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=\"85.215.175.92, 1433\\SQLEXPRESS\";Initial Catalog=GuildDataBase;Persist Security Info=True;User ID=sa;Password=X.rt56fg56");
+                optionsBuilder.UseSqlServer("Data Source=\"000.000.000.0000, 0000\\SQLEXPRESS\";Initial Catalog=GuildDataBase;Persist Security Info=True;User ID=sa;Password=+++++++");
             }
         }
 
